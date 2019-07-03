@@ -21,13 +21,10 @@ inquirer.prompt([{
             download('https://github.com/liginc/laravel-mix-boilerplate-wordpress.git', 'master');
         })
         .then(function () {
-            download('git@bitbucket.org:lig-admin/lig-wordpress-docker.git', 'master', false, false, false);
+            download('https://github.com/liginc/lig-docker-wordpress.git', 'master', false, false, false);
         })
         .then(function () {
-            download('git@bitbucket.org:lig-admin/lig-wordpress-plugins.git', 'master', 'wp/wp-content/plugins');
-        })
-        .then(function () {
-            download('git@bitbucket.org:lig-admin/lig-wordpress-template.git', 'master', 'wp/wp-content/themes/lig');
+            download('https://github.com/liginc/lig-wordpress-template.git', 'master', 'wp/wp-content/themes/lig');
         })
         .then(function () {
             preparing.start();

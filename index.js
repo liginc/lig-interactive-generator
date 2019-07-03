@@ -9,7 +9,7 @@ updateNotifier({
     defer: false
 }).notify();
 
-const localScript = path.join(__dirname, 'lib/lde.js');
+const localScript = path.join(__dirname, 'lib/lig.js');
 let argv = process.argv;
 let env = process.env;
 let modulePath = [

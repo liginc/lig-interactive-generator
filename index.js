@@ -4,7 +4,6 @@ const path = require('path');
 const spawn = require('cross-spawn');
 const updateNotifier = require('update-notifier');
 const pkg = require('./package.json');
-const updateNotifier = require('update-notifier');
 
 updateNotifier({
     pkg: pkg,

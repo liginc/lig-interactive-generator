@@ -16,4 +16,4 @@
 ## Create Develop Environment 
 
 1. Create and move to new project directory
-2. Excute ```lid``` command. 
+2. Excute ```lig``` command. 

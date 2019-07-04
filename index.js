@@ -5,10 +5,7 @@ const spawn = require('cross-spawn');
 const updateNotifier = require('update-notifier');
 const pkg = require('./package.json');
 
-updateNotifier({
-    pkg: pkg,
-    defer: false
-}).notify();
+updateNotifier({pkg}).notify();
 
 const localScript = path.join(__dirname, 'lib/lig.js');
 let argv = process.argv;

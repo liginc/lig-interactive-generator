@@ -18,7 +18,7 @@ inquirer.prompt([{
     const thePromise = Promise.resolve();
     thePromise
         .then(function () {
-            download('https://github.com/liginc/laravel-mix-boilerplate-wordpress.git', 'master');
+            download('https://github.com/liginc/laravel-mix-boilerplate-wordpress.git', 'feature/optimize-directory-for-docker');
         })
         .then(function () {
             download('https://github.com/liginc/lig-docker-wordpress.git', 'master', false, false, false);

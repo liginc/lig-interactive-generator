@@ -4,12 +4,16 @@ const childProcess = require('child_process');
 const ora = require('ora');
 const fs = require('fs-extra');
 const promise = require('promise');
+console.log();
 
 function download(repository, branchName = 'master', destDir = false, removeGitignore = true, removeReadme = true) {
     const spinner = ora(`[download] ${repository}`).start();
     const result = childProcess.spawnSync('git', ["clone", "--depth", "1", repository, "tmp", "-b", branchName]);
     const tmpPath = path.join(process.cwd(), 'tmp');
-    const destPath = (destDir === false) ? path.join(process.cwd()) : path.join(process.cwd(), destDir);
+    const rootDir = (process.argv[2] === 'true') ? path.join(process.cwd(), 'lig-interactive-generator') : path.join(process.cwd());
+    console.log(rootDir);
+    const destPath = (destDir === false) ? path.join(rootDir) : path.join(rootDir, destDir);
+    console.log(destPath)
     if (result.status !== 0) {
         process.stderr.write(result.stderr);
         process.exit(result.status);

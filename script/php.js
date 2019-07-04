@@ -2,4 +2,4 @@
 'use strict';
 const download = require('../util/download');
 
-download('https://github.com/liginc/laravel-mix-boilerplate-static.git','static');
+download('https://github.com/liginc/laravel-mix-boilerplate-static.git','master');

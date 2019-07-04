@@ -32,6 +32,7 @@ inquirer.prompt([{
             childProcess.spawnSync('sed', ["-i", "", "-e", "s|!/wp/wp-content/themes/lig/|!/wp/wp-content/themes/" + answer.name + "/|g", path.join(process.cwd(), ".gitignore")]);
             childProcess.spawnSync('sed', ["-i", "", "-e", "s|'input-theme-name'|'" + answer.name + "'|g", path.join(process.cwd(), "webpack.mix.js")]);
             childProcess.spawnSync('mv', ["wp/wp-content/themes/input-theme-name/inc", "wp/wp-content/themes/lig/"]);
+            childProcess.spawnSync('rm', ["-Rf", "wp/wp-content/themes/input-theme-name"]);
             fs.renameSync(path.join(process.cwd(), 'resources/themes/input-theme-name'), path.join(process.cwd(), 'resources/themes', answer.name));
             fs.renameSync(path.join(process.cwd(), 'wp/wp-content/themes/lig'), path.join(process.cwd(), 'wp/wp-content/themes', answer.name));
             preparing.succeed();

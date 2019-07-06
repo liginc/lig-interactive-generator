@@ -5,6 +5,8 @@ const ora = require('ora');
 const fs = require('fs-extra');
 const promise = require('promise');
 
+const isFileExist = require('../util/isFileExist.js');
+
 function download(repository, branchName = 'master', destDir = false, removeGitignore = true, removeReadme = true, mergeEnvSample = false) {
     const spinner = ora(`[download] ${repository}`).start();
     const result = childProcess.spawnSync('git', ["clone", "--depth", "1", repository, "tmp", "-b", branchName]);
@@ -50,17 +52,17 @@ function download(repository, branchName = 'master', destDir = false, removeGiti
 
         const mergeEnv = new Promise(function () {
             const samplePath = path.join(tmpPath, '.env-sample');
-            const envPath = path.join(rootDir, '.env')
-            if (mergeEnvSample !== false && isExistsFile(samplePath)) {
+            const envPath = path.join(rootDir, '.env');
+            if (mergeEnvSample !== false && isFileExist(samplePath)) {
                 const envData = fs.readFileSync(samplePath, {encoding: "utf-8"});
-                if (isExistsFile(envPath)) {
+                if (!isFileExist(envPath)) {
                     fs.writeFileSync(envPath, envData, function (err) {
                         if (err) {
                             throw err;
                         }
                     });
                 } else {
-                    fs.appendFileSync(envPath, envData, function (err) {
+                    fs.appendFileSync(envPath, "\n\n"+envData, function (err) {
                         if (err) {
                             throw err;
                         }
@@ -69,6 +71,7 @@ function download(repository, branchName = 'master', destDir = false, removeGiti
                 fs.removeSync(samplePath);
             }
         });
+
 
 
         const moveFiles = new Promise(function (resolve, reject) {
@@ -84,12 +87,3 @@ function download(repository, branchName = 'master', destDir = false, removeGiti
 }
 
 module.exports = download;
-
-function isExistsFile(path) {
-    try {
-        fs.statSync(file);
-        return true
-    } catch (err) {
-        if (err.code === 'ENOENT') return false
-    }
-}

@@ -5,7 +5,7 @@ const ora = require('ora');
 const fs = require('fs-extra');
 const promise = require('promise');
 
-function download(repository, branchName = 'master', destDir = false, removeGitignore = true, removeReadme = true) {
+function download(repository, branchName = 'master', destDir = false, removeGitignore = true, removeReadme = true, mergeEnvSample = false) {
     const spinner = ora(`[download] ${repository}`).start();
     const result = childProcess.spawnSync('git', ["clone", "--depth", "1", repository, "tmp", "-b", branchName]);
     const tmpPath = path.join(process.cwd(), 'tmp');
@@ -48,6 +48,29 @@ function download(repository, branchName = 'master', destDir = false, removeGiti
             }
         });
 
+        const mergeEnv = new Promise(function () {
+            const samplePath = path.join(tmpPath, '.env-sample');
+            const envPath = path.join(rootDir, '.env')
+            if (mergeEnvSample !== false && isExistsFile(samplePath)) {
+                const envData = fs.readFileSync(samplePath, {encoding: "utf-8"});
+                if (isExistsFile(envPath)) {
+                    fs.writeFileSync(envPath, envData, function (err) {
+                        if (err) {
+                            throw err;
+                        }
+                    });
+                } else {
+                    fs.appendFileSync(envPath, envData, function (err) {
+                        if (err) {
+                            throw err;
+                        }
+                    });
+                }
+                fs.removeSync(samplePath);
+            }
+        });
+
+
         const moveFiles = new Promise(function (resolve, reject) {
             if (destDir !== false) {
                 fs.mkdirsSync(destPath);
@@ -56,8 +79,17 @@ function download(repository, branchName = 'master', destDir = false, removeGiti
             fs.removeSync(tmpPath);
         });
 
-        removeGitFiles.then(moveFiles);
+        removeGitFiles.then(mergeEnv).then(moveFiles);
     }
 }
 
 module.exports = download;
+
+function isExistsFile(path) {
+    try {
+        fs.statSync(file);
+        return true
+    } catch (err) {
+        if (err.code === 'ENOENT') return false
+    }
+}

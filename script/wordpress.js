@@ -25,11 +25,11 @@ inquirer.prompt([{
             download('https://github.com/liginc/lig-docker-wordpress.git', 'master', false, false, false);
         })
         .then(function () {
-            download('https://github.com/liginc/lig-wordpress-template.git', 'master', 'wp/wp-content/themes/lig');
+            download('https://github.com/liginc/lig-wordpress-template.git', 'master', 'wp/wp-content/themes/lig', false);
         })
         .then(function () {
             preparing.start();
-            childProcess.spawnSync('sed', ["-i", "", "-e", "s|WP_THEME_NAME=lig|WP_THEME_NAME=" + answer.name + "|g", path.join(rootDir, "docker.env")]);
+            childProcess.spawnSync('sed', ["-i", "", "-e", "s|WP_THEME_NAME=lig|WP_THEME_NAME=" + answer.name + "|g", path.join(rootDir, ".env")]);
             childProcess.spawnSync('sed', ["-i", "", "-e", "s|!/wp/wp-content/themes/lig/|!/wp/wp-content/themes/" + answer.name + "/|g", path.join(rootDir, ".gitignore")]);
             childProcess.spawnSync('sed', ["-i", "", "-e", "s|'input-theme-name'|'" + answer.name + "'|g", path.join(rootDir, "webpack.mix.js")]);
             childProcess.spawnSync('mv', [path.join(rootDir, "wp/wp-content/themes/input-theme-name/inc"), path.join(rootDir, "wp/wp-content/themes/lig/")]);

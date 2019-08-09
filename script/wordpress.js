@@ -34,10 +34,10 @@ inquirer.prompt([{
     const thePromise = Promise.resolve();
     thePromise
         .then(function () {
-            download('https://github.com/liginc/lig-docker-wordpress.git', 'master', false, false, false, true);
+            download('https://github.com/liginc/lig-docker-wordpress.git', 'master', false, true, false, true);
         })
         .then(function () {
-            download('https://github.com/liginc/laravel-mix-boilerplate-wordpress.git', 'feature/optimize-directory-for-docker', false, true, true, true);
+            download('https://github.com/liginc/laravel-mix-boilerplate-wordpress.git', 'master', false, true, true, true);
         })
         .then(function () {
             download('https://github.com/liginc/lig-wordpress-template.git', 'master', 'wp/wp-content/themes/lig', false);

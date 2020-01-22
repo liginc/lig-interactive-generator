@@ -34,13 +34,23 @@ inquirer.prompt([{
     const thePromise = Promise.resolve();
     thePromise
         .then(function () {
-            download('https://github.com/liginc/lig-docker-wordpress.git', 'master', false, false, false, true);
+            download('https://github.com/liginc/lig-docker-wordpress.git', {
+                removeGitignore: false,
+                removeReadme: false,
+                mergeEnvSample: true
+            });
         })
         .then(function () {
-            download('https://github.com/liginc/laravel-mix-boilerplate-wordpress.git', 'master', false, true, true, true);
+            download('https://github.com/liginc/laravel-mix-boilerplate-wordpress.git', {
+                mergeEnvSample: true
+            });
         })
         .then(function () {
-            download('https://github.com/liginc/lig-wordpress-template.git', 'master', 'wp/wp-content/themes/lig', false);
+            download('https://github.com/liginc/lig-wordpress-template.git', {
+                branchName: 'master',
+                destDir: 'wp/wp-content/themes/lig',
+                removeGitignore: false
+            });
         })
         .then(function () {
             preparing.start();

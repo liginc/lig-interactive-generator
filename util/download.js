@@ -72,8 +72,6 @@ function download(repository, branchName = 'master', destDir = false, removeGiti
             }
         });
 
-
-
         const moveFiles = new Promise(function (resolve, reject) {
             if (destDir !== false) {
                 fs.mkdirsSync(destPath);

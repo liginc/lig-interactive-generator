@@ -55,9 +55,9 @@ inquirer.prompt([{
             const PHP_VER = ( answer.php_ver === '' ) ? defaultPHPVersion : answer.php_ver;
             const MYSQL_VER = ( answer.mysql_ver === '' ) ? defaultMySQLVersion : answer.mysql_ver;
             const WP_VER = ( answer.wordpress_ver === '' ) ? 'latest' : answer.wordpress_ver;
-            childProcess.spawnSync('sed', ["-i", "", "-e", "s|PHP_VER=7.3.6|PHP_VER=" + PHP_VER + "|g", path.join(rootDir, ".env")]);
-            childProcess.spawnSync('sed', ["-i", "", "-e", "s|MYSQL_VER=8.0.16|MYSQL_VER=" + MYSQL_VER + "|g", path.join(rootDir, ".env")]);
-            childProcess.spawnSync('sed', ["-i", "", "-e", "s|WP_VERSION=latest|WP_VERSION=" + WP_VER + "|g", path.join(rootDir, ".env")]);
+            childProcess.spawnSync('sed', ["-i", "", "-e", "s|PHP_VER=.*$|PHP_VER=" + PHP_VER + "|g", path.join(rootDir, ".env")]);
+            childProcess.spawnSync('sed', ["-i", "", "-e", "s|MYSQL_VER=.*$|MYSQL_VER=" + MYSQL_VER + "|g", path.join(rootDir, ".env")]);
+            childProcess.spawnSync('sed', ["-i", "", "-e", "s|WP_VERSION=.*$|WP_VERSION=" + WP_VER + "|g", path.join(rootDir, ".env")]);
             childProcess.spawnSync('sed', ["-i", "", "-e", "s|WP_THEME_NAME=lig|WP_THEME_NAME=" + answer.name + "|g", path.join(rootDir, ".env")]);
 
             preparing.succeed();

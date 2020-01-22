@@ -7,7 +7,16 @@ const promise = require('promise');
 
 const isFileExist = require('../util/isFileExist.js');
 
-function download(repository, branchName = 'master', destDir = false, removeGitignore = true, removeReadme = true, mergeEnvSample = false) {
+function download(
+    repository,
+    {
+        branchName = 'master',
+        destDir = false,
+        removeGitignore = true,
+        removeReadme = true,
+        mergeEnvSample = false
+    } = {}
+) {
     const spinner = ora(`[download] ${repository}`).start();
     const result = childProcess.spawnSync('git', ["clone", "--depth", "1", repository, "tmp", "-b", branchName]);
     const tmpPath = path.join(process.cwd(), 'tmp');

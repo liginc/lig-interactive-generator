@@ -81,8 +81,6 @@ function download(
             }
         });
 
-
-
         const moveFiles = new Promise(function (resolve, reject) {
             if (destDir !== false) {
                 fs.mkdirsSync(destPath);

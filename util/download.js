@@ -18,10 +18,11 @@ function download(
     } = {}
 ) {
     const spinner = ora(`[download] ${repository}`).start();
-    const result = childProcess.spawnSync('git', ["clone", "--depth", "1", repository, "tmp", "-b", branchName]);
-    const tmpPath = path.join(process.cwd(), 'tmp');
-    const rootDir = (process.argv[2] === 'true') ? path.join(process.cwd(), 'lig-interactive-generator') : path.join(process.cwd());
-    const destPath = (destDir === false) ? path.join(rootDir) : path.join(rootDir, destDir);
+    const result = childProcess.spawnSync('git', ["clone", "--depth", "1", repository, process.argv[2]+"/tmp", "-b", branchName]);
+    const tmpDir = path.join(process.cwd(), process.argv[2],'tmp');
+    const projectDir = path.join(process.cwd(), process.argv[2]);
+    const destPath = (destDir === false) ? path.join(projectDir) : path.join(projectDir, destDir);
+
     if (result.status !== 0) {
         process.stderr.write(result.stderr);
         process.exit(result.status);
@@ -33,7 +34,7 @@ function download(
         const removeGitFiles = new Promise(function (resolve, reject) {
             if (removeGitignore) {
                 try {
-                    const gitignorePath = path.join(tmpPath, '.gitignore');
+                    const gitignorePath = path.join(tmpDir, '.gitignore');
                     fs.removeSync(gitignorePath);
                 } catch (e) {
                     console.log("couldn't remove .gitignore");
@@ -42,7 +43,7 @@ function download(
             }
             if (removeReadme) {
                 try {
-                    const readmePath = path.join(tmpPath, 'README.md');
+                    const readmePath = path.join(tmpDir, 'README.md');
                     fs.removeSync(readmePath);
                 } catch (e) {
                     console.log("couldn't remove README.md");
@@ -51,7 +52,7 @@ function download(
             }
 
             try {
-                const dotGitPath = path.join(tmpPath, '.git');
+                const dotGitPath = path.join(tmpDir, '.git');
                 fs.removeSync(dotGitPath);
             } catch (e) {
                 console.log("couldn't remove .git");
@@ -60,8 +61,8 @@ function download(
         });
 
         const mergeEnv = new Promise(function () {
-            const samplePath = path.join(tmpPath, '.env-sample');
-            const envPath = path.join(rootDir, '.env');
+            const samplePath = path.join(tmpDir, '.env-sample');
+            const envPath = path.join(projectDir, '.env');
             if (mergeEnvSample !== false && isFileExist(samplePath)) {
                 const envData = fs.readFileSync(samplePath, {encoding: "utf-8"});
                 if (!isFileExist(envPath)) {
@@ -85,10 +86,9 @@ function download(
             if (destDir !== false) {
                 fs.mkdirsSync(destPath);
             }
-            fs.copySync(tmpPath, destPath);
-            fs.removeSync(tmpPath);
+            fs.copySync(tmpDir, destPath);
+            fs.removeSync(tmpDir);
         });
-
         removeGitFiles.then(mergeEnv).then(moveFiles);
     }
 }

@@ -9,7 +9,7 @@ const ora = require('ora');
 
 const download = require('../util/download');
 const preparing = ora(`[preparing]`);
-const rootDir = (process.argv[2] === 'true') ? path.join(process.cwd(), 'lig-interactive-generator') : path.join(process.cwd());
+const rootDir = path.join(process.cwd(), process.argv[2]);
 
 inquirer.prompt([{
     name: 'name',
@@ -32,8 +32,6 @@ inquirer.prompt([{
     thePromise
         .then(function () {
             download('https://github.com/liginc/lig-docker-wordpress.git', {
-                removeGitignore: false,
-                removeReadme: false,
                 mergeEnvSample: true
             });
         })
@@ -44,9 +42,7 @@ inquirer.prompt([{
         })
         .then(function () {
             download('https://github.com/liginc/lig-wordpress-template.git', {
-                branchName: 'master',
                 destDir: 'wp/wp-content/themes/lig',
-                removeGitignore: false
             });
         })
         .then(function () {

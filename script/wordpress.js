@@ -21,11 +21,11 @@ inquirer.prompt([{
     type: 'input',
 }, {
     name: 'php_ver',
-    message: 'Type PHP version (Empty will be "latest")',
+    message: 'Type PHP version (Empty will be "7.3.14")',
     type: 'input',
 }, {
     name: 'mysql_ver',
-    message: 'Type MySQL version (Empty will be "latest")',
+    message: 'Type MySQL version (Empty will be "5.7.29")',
     type: 'input',
 }]).then((answer) => {
     const thePromise = Promise.resolve();

@@ -38,16 +38,16 @@ inquirer.prompt([{
         })
         .then(function () {
             download('https://github.com/liginc/lig-wordpress-template.git', {
-                destDir: 'wp/wp-content/themes/' + process.argv[2],
+                destDir: 'wp/wp-content/themes/'+process.argv[2],
             });
         })
         .then(function () {
             preparing.start();
-            childProcess.spawnSync('sed', ["-i", "", "-e", "s|'input-theme-name'|'" + process.argv[2] + "'|g", path.join(rootDir, "webpack.mix.js")]);
+
             childProcess.spawnSync('rm', ["-Rf", path.join(rootDir, "wp/wp-content/themes/input-theme-name")]);
             fs.renameSync(path.join(rootDir, 'resources/themes/input-theme-name'), path.join(rootDir, 'resources/themes', process.argv[2]));
 
-            // Edit .env
+            // Replace text on .env
             if (answer.php_ver !== '') childProcess.spawnSync('sed', ["-i", "", "-e", "s|PHP_VER=.*$|PHP_VER=" + answer.php_ver + "|g", path.join(rootDir, ".env")]);
             if (answer.mysql_ver !== '') childProcess.spawnSync('sed', ["-i", "", "-e", "s|MYSQL_VER=.*$|MYSQL_VER=" + answer.mysql_ver + "|g", path.join(rootDir, ".env")]);
             if (answer.wordpress_ver !== '') childProcess.spawnSync('sed', ["-i", "", "-e", "s|WP_VERSION=.*$|WP_VERSION=" + WP_VER + "|g", path.join(rootDir, ".env")]);
@@ -57,7 +57,5 @@ inquirer.prompt([{
             childProcess.spawnSync('sed', ["-i", "", "-e", "s|wordpress.test|localhost|g", path.join(rootDir, ".env")]);
 
             preparing.succeed();
-        }).then(function () {
-            console.log("Done");
-    });
+        });
 });

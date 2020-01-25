@@ -6,7 +6,7 @@ const updateNotifier = require('update-notifier');
 const pkg = require('./package.json');
 
 const notifier = updateNotifier({pkg,
-    updateCheckInterval:1000 * 60 * 60 * 24
+    updateCheckInterval:1000 * 60 * 60 * 24 * 3
 }).notify();
 
 if (notifier.update) {

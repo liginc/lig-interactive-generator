@@ -9,7 +9,10 @@ const ora = require('ora');
 
 const download = require('../util/download');
 const preparing = ora(`[preparing]`);
-const rootDir = path.join(process.cwd(), process.argv[2]);
+
+const projectName = process.argv[2];
+const rootDir = path.join(process.cwd(), projectName);
+const env = path.join(rootDir, ".env");
 
 inquirer.prompt([{
     name: 'wordpress_ver',
@@ -38,24 +41,23 @@ inquirer.prompt([{
         })
         .then(function () {
             download('https://github.com/liginc/lig-wordpress-template.git', {
-                destDir: 'wp/wp-content/themes/lig',
+                destDir: 'wp/wp-content/themes/' + projectName,
             });
         })
         .then(function () {
             preparing.start();
-            childProcess.spawnSync('sed', ["-i", "", "-e", "s|!/wp/wp-content/themes/lig/|!/wp/wp-content/themes/" + process.argv[2] + "/|g", path.join(rootDir, ".gitignore")]);
-            childProcess.spawnSync('sed', ["-i", "", "-e", "s|'input-theme-name'|'" + process.argv[2] + "'|g", path.join(rootDir, "webpack.mix.js")]);
-            childProcess.spawnSync('mv', [path.join(rootDir, "wp/wp-content/themes/input-theme-name/inc"), path.join(rootDir, "wp/wp-content/themes/lig/")]);
+
             childProcess.spawnSync('rm', ["-Rf", path.join(rootDir, "wp/wp-content/themes/input-theme-name")]);
-            fs.renameSync(path.join(rootDir, 'resources/themes/input-theme-name'), path.join(rootDir, 'resources/themes', process.argv[2]));
-            fs.renameSync(path.join(rootDir, 'wp/wp-content/themes/lig'), path.join(rootDir, 'wp/wp-content/themes', process.argv[2]));
+            fs.renameSync(path.join(rootDir, 'resources/themes/input-theme-name'), path.join(rootDir, 'resources/themes', projectName));
 
-            // Edit .env
-            if (answer.php_ver !== '') childProcess.spawnSync('sed', ["-i", "", "-e", "s|PHP_VER=.*$|PHP_VER=" + answer.php_ver + "|g", path.join(rootDir, ".env")]);
-            if (answer.mysql_ver !== '') childProcess.spawnSync('sed', ["-i", "", "-e", "s|MYSQL_VER=.*$|MYSQL_VER=" + answer.mysql_ver + "|g", path.join(rootDir, ".env")]);
-            if (answer.wordpress_ver !== '') childProcess.spawnSync('sed', ["-i", "", "-e", "s|WP_VERSION=.*$|WP_VERSION=" + WP_VER + "|g", path.join(rootDir, ".env")]);
+            // Replace text on .env
+            if (answer.php_ver !== '') childProcess.spawnSync('sed', ["-i", "", "-e", "s|PHP_VER=.*$|PHP_VER=" + answer.php_ver + "|g", env]);
+            if (answer.mysql_ver !== '') childProcess.spawnSync('sed', ["-i", "", "-e", "s|MYSQL_VER=.*$|MYSQL_VER=" + answer.mysql_ver + "|g", env]);
+            if (answer.wordpress_ver !== '') childProcess.spawnSync('sed', ["-i", "", "-e", "s|WP_VERSION=.*$|WP_VERSION=" + WP_VER + "|g", env]);
 
-            childProcess.spawnSync('sed', ["-i", "", "-e", "s|WP_THEME_NAME=lig|WP_THEME_NAME=" + process.argv[2] + "|g", path.join(rootDir, ".env")]);
+            childProcess.spawnSync('sed', ["-i", "", "-e", "s|WP_THEME_NAME=.*$|WP_THEME_NAME=" + projectName + "|g", env]);
+            childProcess.spawnSync('sed', ["-i", "", "-e", "s|input-theme-name|" + projectName + "|g", env]);
+            childProcess.spawnSync('sed', ["-i", "", "-e", "s|wordpress.test|localhost|g", env]);
 
             preparing.succeed();
         });

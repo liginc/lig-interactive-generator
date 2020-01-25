@@ -5,7 +5,6 @@ services:
     env_file: .env
     image: php:${PHP_VER}-apache
     volumes:
-      - ./php.ini:/usr/local/etc/php/php.ini
       - ./public:/var/www/html
     ports:
       - 80:80

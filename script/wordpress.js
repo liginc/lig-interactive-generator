@@ -54,6 +54,7 @@ inquirer.prompt([{
 
             childProcess.spawnSync('sed', ["-i", "", "-e", "s|WP_THEME_NAME=.*$|WP_THEME_NAME=" + process.argv[2] + "|g", path.join(rootDir, ".env")]);
             childProcess.spawnSync('sed', ["-i", "", "-e", "s|input-theme-name|" + process.argv[2] + "|g", path.join(rootDir, ".env")]);
+            childProcess.spawnSync('sed', ["-i", "", "-e", "s|wordpress.test|localhost|g", path.join(rootDir, ".env")]);
 
             preparing.succeed();
         }).then(function () {

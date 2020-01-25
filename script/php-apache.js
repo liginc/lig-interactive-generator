@@ -3,4 +3,4 @@
 const path = require('path');
 const download = require('../util/download');
 
-download('https://github.com/liginc/laravel-mix-boilerplate-static.git');
+download('https://github.com/liginc/laravel-mix-boilerplate-static.git',{mergeEnvSample:true});

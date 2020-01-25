@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  web:
+    env_file: .env
+    image: php:${PHP_VER}-apache
+    volumes:
+      - ./public:/var/www/html
+    ports:
+      - 80:80

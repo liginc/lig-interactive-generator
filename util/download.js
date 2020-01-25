@@ -13,7 +13,7 @@ function download(
         branchName = 'master',
         destDir = false,
         removeGitignore = true,
-        removeReadme = true,
+        removeReadme = false,
         mergeEnvSample = false
     } = {}
 ) {

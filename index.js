@@ -5,7 +5,14 @@ const spawn = require('cross-spawn');
 const updateNotifier = require('update-notifier');
 const pkg = require('./package.json');
 
-updateNotifier({pkg}).notify();
+const notifier = updateNotifier({pkg,
+    updateCheckInterval:1000 * 60 * 60 * 24
+}).notify();
+
+if (notifier.update) {
+    console.log(`Please update "lig interactive generator"`);
+    process.exit();
+}
 
 const localScript = path.join(__dirname, 'lib/lig.js');
 let argv = process.argv;

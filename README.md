@@ -1,13 +1,13 @@
 # LIG Interactive Generator
  
-- Last Update : 2020/01/23 
-- Leatest Version : 0.2.9 
+- Last Update : 2020/01/26
+- Leatest Version : 0.3.2
 - Author : LIG inc
  
 ## Require 
  
-- Node : ^10.14.2
-- NPM : ^6.4.1  
+- Node : ^8.17.0
+- NPM : ^6.13.4  
  
 ## Install 
  
@@ -15,5 +15,4 @@
  
 ## Create Develop Environment 
 
-1. Create and move to new project directory
-2. Excute ```lig``` command. 
+1. Excute ```lig``` command. 

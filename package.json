@@ -1,7 +1,7 @@
 {
   "name": "lig-interactive-generator",
-  "version": "0.3.2",
-  "description": "- Last Update : 2020/01/26  - Leatest Version : 0.3.2  - Author : LIG inc",
+  "version": "0.3.3",
+  "description": "- Last Update : 2020/01/29  - Leatest Version : 0.3.3  - Author : LIG inc",
   "main": "index.js",
   "engines": {
     "node": ">=8.17.0",

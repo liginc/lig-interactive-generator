@@ -13,6 +13,7 @@ const preparing = ora(`[preparing]`);
 const projectName = process.argv[2];
 const rootDir = path.join(process.cwd(), projectName);
 const env = path.join(rootDir, ".env");
+const webpackMixJs = path.join(rootDir, "webpack.mix.js");
 
 inquirer.prompt([{
     name: 'wordpress_ver',
@@ -58,6 +59,17 @@ inquirer.prompt([{
             childProcess.spawnSync('sed', ["-i", "", "-e", "s|WP_THEME_NAME=.*$|WP_THEME_NAME=" + projectName + "|g", env]);
             childProcess.spawnSync('sed', ["-i", "", "-e", "s|input-theme-name|" + projectName + "|g", env]);
             childProcess.spawnSync('sed', ["-i", "", "-e", "s|wordpress.test|localhost|g", env]);
+
+            fs.readFile(webpackMixJs, 'utf8', function (err,data) {
+                if (err) {
+                    return console.log(err);
+                }
+                data = data.replace(/(const srcRelativePath =).+?\((.+?)\s.+?.replace\(.+?\)/s, '$1 $2;');
+                data = data.replace(/(const distRelativePath =).+?\((.+?)\s.+?.replace\(.+?\)/s, '$1 $2;');
+                fs.writeFile(webpackMixJs, data, 'utf8', function (err) {
+                    if (err) return console.log(err);
+                });
+            });
 
             preparing.succeed();
         });

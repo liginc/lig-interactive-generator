@@ -7,7 +7,7 @@ const promise = require('promise');
 
 const isFileExist = require('../util/isFileExist.js');
 
-function download(
+async function download(
     repository,
     {
         branchName = 'master',
@@ -90,6 +90,7 @@ function download(
             fs.removeSync(tmpDir);
         });
         removeGitFiles.then(mergeEnv).then(moveFiles);
+        return await destPath
     }
 }
 

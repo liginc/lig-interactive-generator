@@ -12,6 +12,8 @@ const preparing = ora(`[preparing]`);
 
 const projectName = process.argv[2];
 const rootDir = path.join(process.cwd(), projectName);
+const pkgPath = path.join(rootDir, 'package.json')
+const nodeVersion = process.argv[3];
 const env = path.join(rootDir, ".env");
 
 inquirer.prompt([{
@@ -29,22 +31,22 @@ inquirer.prompt([{
 }]).then((answer) => {
     const thePromise = Promise.resolve();
     thePromise
-        .then(function () {
+        .then(() => {
             download('https://github.com/liginc/lig-docker-wordpress.git', {
                 mergeEnvSample: true
             });
         })
-        .then(function () {
+        .then(() => {
             download('https://github.com/liginc/laravel-mix-boilerplate-wordpress.git', {
                 mergeEnvSample: true
             });
         })
-        .then(function () {
+        .then(() => {
             download('https://github.com/liginc/lig-wordpress-template.git', {
                 destDir: 'wp/wp-content/themes/' + projectName,
             });
         })
-        .then(function () {
+        .then(() => {
             preparing.start();
 
             childProcess.spawnSync('rm', ["-Rf", path.join(rootDir, "wp/wp-content/themes/input-theme-name")]);
@@ -60,5 +62,12 @@ inquirer.prompt([{
             childProcess.spawnSync('sed', ["-i", "", "-e", "s|wordpress.test|localhost|g", env]);
 
             preparing.succeed();
+        })
+        .then(() => {
+            let pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
+            pkg.engineStrict = true
+            pkg.engines.node = nodeVersion
+            fs.writeFileSync(pkgPath, JSON.stringify(pkg));
+            process.stdout.write("Set node version into package.json \n")
         });
 });

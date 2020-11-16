@@ -7,7 +7,7 @@ const promise = require('promise');
 
 const isFileExist = require('../util/isFileExist.js');
 
-function download(
+async function download(
     repository,
     {
         branchName = 'master',

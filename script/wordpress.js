@@ -52,18 +52,14 @@ inquirer.prompt([{
                     destDir: 'wp/wp-content/themes/' + projectName,
                 });
             } else {
-                childProcess.spawnSync('rm', ["-Rf", path.join(rootDir, "resources/themes/input-theme-name")]);
-                childProcess.spawnSync('rm', ["-Rf", path.join(rootDir, "wp/wp-content/themes/input-theme-name")]);
-                childProcess.spawnSync('rm', ["-Rf", path.join(rootDir, "resources")]);
-                childProcess.spawnSync('rm', ["-Rf", path.join(rootDir, "sql")]);
-                childProcess.spawnSync('rm', ["-Rf", path.join(rootDir, "package.json")]);
-                childProcess.spawnSync('rm', ["-Rf", path.join(rootDir, "package-lock.json")]);
-                download('https://github.com/liginc/lig-wordpress-template.git', {
-                    destDir: 'wp/wp-content/themes/' + projectName,
-                }).then(() => {
-                    download('https://github.com/liginc/lig-wordpress-template-resources.git').then(() => {
-                        fs.renameSync(path.join(rootDir, 'resources/themes/lig-wordpress-template'), path.join(rootDir, 'resources/themes', projectName));
-                    })
+                fs.removeSync(path.join(rootDir, "resources"))
+                fs.removeSync(path.join(rootDir, "wp/wp-content/themes/input-theme-name"))
+                fs.removeSync(path.join(rootDir, "sql"))
+                fs.removeSync(path.join(rootDir, "package.json"))
+                fs.removeSync(path.join(rootDir, "package-lock.json"))
+                download('https://github.com/liginc/lig-wordpress-template.git').then(() => {
+                    fs.renameSync(path.join(rootDir, 'wp/wp-content/themes/lig-wordpress-template'), path.join(rootDir, 'wp/wp-content/themes', projectName));
+                    fs.renameSync(path.join(rootDir, 'resources/themes/lig-wordpress-template'), path.join(rootDir, 'resources/themes', projectName));
                 });
             }
         })

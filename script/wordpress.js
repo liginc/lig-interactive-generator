@@ -19,6 +19,11 @@ inquirer.prompt([{
     message: 'Type WordPress version (Empty will be "latest")',
     type: 'input',
 }, {
+    name: 'wordpress_type',
+    message: 'Choose WP including file type',
+    type: 'list',
+    choices: ['with theme sample', 'only functions']
+}, {
     name: 'php_ver',
     message: 'Type PHP version (Empty will be "7.3")',
     type: 'input',
@@ -37,18 +42,33 @@ inquirer.prompt([{
         .then(function () {
             download('https://github.com/liginc/laravel-mix-boilerplate-wordpress.git', {
                 mergeEnvSample: true
-            });
+            })
         })
-        .then(function () {
-            download('https://github.com/liginc/lig-wordpress-template.git', {
-                destDir: 'wp/wp-content/themes/' + projectName,
-            });
+        .then(() => {
+            if (answer.wordpress_type == 'only functions') {
+                fs.renameSync(path.join(rootDir, 'wp/wp-content/themes/input-theme-name'), path.join(rootDir, 'wp/wp-content/themes', projectName));
+                fs.renameSync(path.join(rootDir, 'resources/themes/input-theme-name'), path.join(rootDir, 'resources/themes', projectName));
+                download('https://github.com/liginc/lig-wordpress-functions.git', {
+                    destDir: 'wp/wp-content/themes/' + projectName,
+                });
+            } else {
+                childProcess.spawnSync('rm', ["-Rf", path.join(rootDir, "resources/themes/input-theme-name")]);
+                childProcess.spawnSync('rm', ["-Rf", path.join(rootDir, "wp/wp-content/themes/input-theme-name")]);
+                childProcess.spawnSync('rm', ["-Rf", path.join(rootDir, "resources")]);
+                childProcess.spawnSync('rm', ["-Rf", path.join(rootDir, "sql")]);
+                childProcess.spawnSync('rm', ["-Rf", path.join(rootDir, "package.json")]);
+                childProcess.spawnSync('rm', ["-Rf", path.join(rootDir, "package-lock.json")]);
+                download('https://github.com/liginc/lig-wordpress-template.git', {
+                    destDir: 'wp/wp-content/themes/' + projectName,
+                }).then(() => {
+                    download('https://github.com/liginc/lig-wordpress-template-resources.git').then(() => {
+                        fs.renameSync(path.join(rootDir, 'resources/themes/lig-wordpress-template'), path.join(rootDir, 'resources/themes', projectName));
+                    })
+                });
+            }
         })
         .then(function () {
             preparing.start();
-
-            childProcess.spawnSync('rm', ["-Rf", path.join(rootDir, "wp/wp-content/themes/input-theme-name")]);
-            fs.renameSync(path.join(rootDir, 'resources/themes/input-theme-name'), path.join(rootDir, 'resources/themes', projectName));
 
             // Replace text on .env
             if (answer.php_ver !== '') childProcess.spawnSync('sed', ["-i", "", "-e", "s|PHP_VER=.*$|PHP_VER=" + answer.php_ver + "|g", env]);
@@ -60,5 +80,5 @@ inquirer.prompt([{
             childProcess.spawnSync('sed', ["-i", "", "-e", "s|wordpress.test|localhost|g", env]);
 
             preparing.succeed();
-        });
+        })
 });

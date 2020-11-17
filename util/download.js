@@ -90,6 +90,7 @@ async function download(
             fs.removeSync(tmpDir);
         });
         removeGitFiles.then(mergeEnv).then(moveFiles);
+        return await destPath
     }
 }
 

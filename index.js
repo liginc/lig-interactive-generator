@@ -5,9 +5,7 @@ const spawn = require('cross-spawn');
 const updateNotifier = require('update-notifier');
 const pkg = require('./package.json');
 
-const notifier = updateNotifier({pkg,
-    updateCheckInterval:1000 * 60 * 60 * 24 * 3
-}).notify();
+const notifier = updateNotifier({pkg}).notify();
 
 if (notifier.update) {
     console.log(`Please update "lig interactive generator"`);

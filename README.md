@@ -1,7 +1,7 @@
 # LIG Interactive Generator
  
-- Last Update : 2020/01/29
-- Leatest Version : 0.3.3
+- Last Update : 2020/11/17
+- Leatest Version : 0.4.0
 - Author : LIG inc
  
 ## Require 

@@ -18,8 +18,8 @@ async function download(
     } = {}
 ) {
     const spinner = ora(`[download] ${repository}`).start();
-    const result = childProcess.spawnSync('git', ["clone", "--depth", "1", repository, process.argv[2]+"/tmp", "-b", branchName]);
-    const tmpDir = path.join(process.cwd(), process.argv[2],'tmp');
+    const result = childProcess.spawnSync('git', ["clone", "--depth", "1", repository, process.argv[2] + "/tmp", "-b", branchName]);
+    const tmpDir = path.join(process.cwd(), process.argv[2], 'tmp');
     const projectDir = path.join(process.cwd(), process.argv[2]);
     const destPath = (destDir === false) ? path.join(projectDir) : path.join(projectDir, destDir);
 
@@ -72,7 +72,7 @@ async function download(
                         }
                     });
                 } else {
-                    fs.appendFileSync(envPath, "\n\n"+envData, function (err) {
+                    fs.appendFileSync(envPath, "\n\n" + envData, function (err) {
                         if (err) {
                             throw err;
                         }
@@ -89,13 +89,15 @@ async function download(
             fs.copySync(tmpDir, destPath);
             fs.removeSync(tmpDir);
         });
-        removeGitFiles.then(mergeEnv).then(moveFiles).then(()=>{
-            console.log(path.join(destPath,'after_clone.sh'))
-            console.log(fs.existsSync(path.join(destPath,'after_clone.sh')))
-            if ( fs.existsSync(path.join(destPath,'after_clone.sh')) ) {
-                console.log('hoge')
+
+        const afterClone = new Promise(function (resolve, reject) {
+            if (fs.existsSync(path.join(destPath, 'after_clone.sh'))) {
+                childProcess.execSync('$SHELL ' + path.join(destPath, 'after_clone.sh') + ' ' + destPath)
+                fs.removeSync(path.join(destPath, 'after_clone.sh'))
             }
         });
+
+        removeGitFiles.then(mergeEnv).then(moveFiles).then(afterClone);
         return await destPath
     }
 }

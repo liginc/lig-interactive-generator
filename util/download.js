@@ -89,7 +89,13 @@ async function download(
             fs.copySync(tmpDir, destPath);
             fs.removeSync(tmpDir);
         });
-        removeGitFiles.then(mergeEnv).then(moveFiles);
+        removeGitFiles.then(mergeEnv).then(moveFiles).then(()=>{
+            console.log(path.join(destPath,'after_clone.sh'))
+            console.log(fs.existsSync(path.join(destPath,'after_clone.sh')))
+            if ( fs.existsSync(path.join(destPath,'after_clone.sh')) ) {
+                console.log('hoge')
+            }
+        });
         return await destPath
     }
 }

@@ -25,7 +25,7 @@ inquirer.prompt([{
     name: 'wordpress_type',
     message: 'Choose WP including file type',
     type: 'list',
-    choices: ['with theme sample', 'only functions']
+    choices: ['with theme', 'only functions']
 }, {
     name: 'php_ver',
     message: 'Type PHP version (Empty will be "7.3")',
@@ -48,21 +48,24 @@ inquirer.prompt([{
             })
         })
         .then(() => {
-            if (answer.wordpress_type == 'only functions') {
-                fs.renameSync(path.join(rootDir, 'wp/wp-content/themes/input-theme-name'), path.join(rootDir, 'wp/wp-content/themes', projectName));
-                fs.renameSync(path.join(rootDir, 'resources/themes/input-theme-name'), path.join(rootDir, 'resources/themes', projectName));
-                download('https://github.com/liginc/lig-wordpress-functions.git', {
-                    destDir: 'wp/wp-content/themes/' + projectName,
-                });
-            } else {
+            if (answer.wordpress_type == 'with theme') {
                 fs.removeSync(path.join(rootDir, "resources"))
                 fs.removeSync(path.join(rootDir, "wp/wp-content/themes/input-theme-name"))
-                fs.removeSync(path.join(rootDir, "sql"))
                 fs.removeSync(path.join(rootDir, "package.json"))
                 fs.removeSync(path.join(rootDir, "package-lock.json"))
                 download('https://github.com/liginc/lig-wordpress-template.git').then(() => {
                     fs.renameSync(path.join(rootDir, 'wp/wp-content/themes/lig-wordpress-template'), path.join(rootDir, 'wp/wp-content/themes', projectName));
                     fs.renameSync(path.join(rootDir, 'resources/themes/lig-wordpress-template'), path.join(rootDir, 'resources/themes', projectName));
+                }).then(()=>{
+                    download('https://github.com/liginc/lig-wordpress-functions.git', {
+                        destDir: 'wp/wp-content/themes/' + projectName,
+                    });
+                });
+            } else {
+                fs.renameSync(path.join(rootDir, 'wp/wp-content/themes/input-theme-name'), path.join(rootDir, 'wp/wp-content/themes', projectName));
+                fs.renameSync(path.join(rootDir, 'resources/themes/input-theme-name'), path.join(rootDir, 'resources/themes', projectName));
+                download('https://github.com/liginc/lig-wordpress-functions.git', {
+                    destDir: 'wp/wp-content/themes/' + projectName,
                 });
             }
         })

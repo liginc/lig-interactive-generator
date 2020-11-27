@@ -12,6 +12,6 @@ download('https://github.com/liginc/laravel-mix-boilerplate-static.git', {mergeE
     let pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
     pkg.engineStrict = true
     pkg.engines.node = nodeVersion
-    fs.writeFileSync(pkgPath, JSON.stringify(pkg));
+    fs.writeFileSync(pkgPath, JSON.stringify(pkg,null,2));
     process.stdout.write("Set node version into package.json \n")
 })

@@ -51,8 +51,6 @@ inquirer.prompt([{
             if (answer.wordpress_type == 'with theme') {
                 fs.removeSync(path.join(rootDir, "resources"))
                 fs.removeSync(path.join(rootDir, "wp/wp-content/themes/input-theme-name"))
-                fs.removeSync(path.join(rootDir, "package.json"))
-                fs.removeSync(path.join(rootDir, "package-lock.json"))
                 download('https://github.com/liginc/lig-wordpress-template.git').then(() => {
                     fs.renameSync(path.join(rootDir, 'wp/wp-content/themes/lig-wordpress-template'), path.join(rootDir, 'wp/wp-content/themes', projectName));
                     fs.renameSync(path.join(rootDir, 'resources/themes/lig-wordpress-template'), path.join(rootDir, 'resources/themes', projectName));

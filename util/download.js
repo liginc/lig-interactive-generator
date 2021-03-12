@@ -62,7 +62,7 @@ async function download(
 
         const mergeEnv = new Promise(function () {
             const samplePath = path.join(tmpDir, '.env-sample');
-            const envPath = path.join(projectDir, '.env');
+            const envPath = path.join(projectDir, '.env-sample');
             if (mergeEnvSample !== false && isFileExist(samplePath)) {
                 const envData = fs.readFileSync(samplePath, {encoding: "utf-8"});
                 if (!isFileExist(envPath)) {

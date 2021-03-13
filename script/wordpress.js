@@ -8,12 +8,15 @@ const path = require('path');
 const ora = require('ora');
 
 const download = require('../util/download');
+const setHusky = require('../util/husky');
 const preparing = ora(`[preparing]`);
 
+const scriptPath = process.argv[1];
 const projectName = process.argv[2];
 const rootDir = path.join(process.cwd(), projectName);
 const pkgPath = path.join(rootDir, 'package.json')
 const nodeVersion = process.argv[3];
+const husky = process.argv[4];
 const env = path.join(rootDir, ".env");
 const webpackMixJs = path.join(rootDir, "webpack.mix.js");
 
@@ -98,5 +101,5 @@ inquirer.prompt([{
             pkg.engines.node = nodeVersion
             fs.writeFileSync(pkgPath, JSON.stringify(pkg,null,2));
             process.stdout.write("Set node version into package.json \n")
-        });
+        })
 });

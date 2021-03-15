@@ -14,7 +14,7 @@ async function download(
         destDir = false,
         removeGitignore = true,
         removeReadme = false,
-        mergeEnvSample = false
+        mergeEnvSample = true
     } = {}
 ) {
     const spinner = ora(`[download] ${repository}`).start();
@@ -63,22 +63,27 @@ async function download(
         const mergeEnv = new Promise(function () {
             const samplePath = path.join(tmpDir, '.env-sample');
             const envPath = path.join(projectDir, '.env-sample');
+            if (!isFileExist(envPath)) {
+                fs.appendFileSync(envPath, "", function (err) {
+                    if (err) {
+                        throw err;
+                    }
+                });
+            }
             if (mergeEnvSample !== false && isFileExist(samplePath)) {
-                const envData = fs.readFileSync(samplePath, {encoding: "utf-8"});
-                if (!isFileExist(envPath)) {
-                    fs.writeFileSync(envPath, envData, function (err) {
-                        if (err) {
-                            throw err;
-                        }
-                    });
-                } else {
-                    fs.appendFileSync(envPath, "\n\n" + envData, function (err) {
-                        if (err) {
-                            throw err;
-                        }
-                    });
-                }
+                const envData = fs.readFileSync(envPath, {encoding: "utf-8"});
+                let envDataArr = envData.split(/\r\n|\r|\n/)
+                const envDataTmp = fs.readFileSync(samplePath, {encoding: "utf-8"});
+                let envDataTmpArr = envDataTmp.split(/\r\n|\r|\n/)
+
+                if ( !envDataTmpArr.length ) return
+                envDataTmpArr.forEach(data => {
+                    if ( !envDataArr.includes(data) ) {
+                        envDataArr.push(data)
+                    }
+                })
                 fs.removeSync(samplePath);
+                fs.writeFileSync(envPath,envDataArr.join("\n"))
             }
         });
 

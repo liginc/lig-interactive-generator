@@ -29,12 +29,12 @@ inquirer.prompt([{
     choices: ['with theme', 'only functions']
 }, {
     name: 'php_ver',
-    message: 'Type PHP version',
+    message: 'Choose PHP version',
     type: 'list',
     choices: ['7.3', '7.4','8.0']
 }, {
     name: 'mysql_ver',
-    message: 'Type MySQL version',
+    message: 'Choose MySQL version',
     type: 'list',
     choices: ['5.6', '5.7','8.0']
 }]).then((answer) => {

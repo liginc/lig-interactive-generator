@@ -29,12 +29,14 @@ inquirer.prompt([{
     choices: ['with theme', 'only functions']
 }, {
     name: 'php_ver',
-    message: 'Type PHP version (Empty will be "7.4")',
-    type: 'input',
+    message: 'Choose PHP version',
+    type: 'list',
+    choices: ['7.3', '7.4','8.0']
 }, {
     name: 'mysql_ver',
-    message: 'Type MySQL version (Empty will be "8.0")',
-    type: 'input',
+    message: 'Choose MySQL version',
+    type: 'list',
+    choices: ['5.6', '5.7','8.0']
 }]).then((answer) => {
     const thePromise = Promise.resolve();
     thePromise
@@ -68,8 +70,8 @@ inquirer.prompt([{
             preparing.start();
 
             // Replace text on .env
-            if (answer.php_ver !== '') childProcess.spawnSync('sed', ["-i", "", "-e", "s|PHP_VER=.*$|PHP_VER=" + answer.php_ver + "|g", env]);
-            if (answer.mysql_ver !== '') childProcess.spawnSync('sed', ["-i", "", "-e", "s|MYSQL_VER=.*$|MYSQL_VER=" + answer.mysql_ver + "|g", env]);
+            childProcess.spawnSync('sed', ["-i", "", "-e", "s|PHP_VER=.*$|PHP_VER=" + answer.php_ver + "|g", env]);
+            childProcess.spawnSync('sed', ["-i", "", "-e", "s|MYSQL_VER=.*$|MYSQL_VER=" + answer.mysql_ver + "|g", env]);
             if (answer.wordpress_ver !== '') {
                 childProcess.spawnSync('sed', ["-i", "", "-e", "s|WP_VERSION=.*$|WP_VERSION=" + answer.wordpress_ver + "|g", env]);
             } else {

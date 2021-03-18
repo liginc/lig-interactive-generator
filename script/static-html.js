@@ -3,11 +3,10 @@
 const path = require('path');
 const fs = require('fs-extra')
 const download = require('../util/download');
-const answers = process.argv[2];
-const projectName = process.argv[3];
+const projectName = process.argv[2];
 const rootDir = path.join(process.cwd(), projectName);
 const pkgPath = path.join(rootDir, 'package.json')
-const nodeVersion = process.argv[4];
+const nodeVersion = process.argv[3];
 
 download('https://github.com/liginc/laravel-mix-boilerplate-static.git', {mergeEnvSample: true}).then((projectDir) => {
     let pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))

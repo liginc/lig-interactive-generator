@@ -18,7 +18,7 @@ function setHusky(rootDir, scriptPath) {
     }
 
     // scriptsを追加 初回npm ci時にgit initしてhuskyをインストールする
-    pkg.scripts.prepare = "git init && npx husky init && npx husky install"
+    pkg.scripts.prepare = "if [ ! -e .git ]; then git init; fi && npx husky init && npx husky install"
     pkg.scripts.test = "lint-staged -c .lintstagedrc.js"
     fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2))
     ora(`Update package.json`).succeed()
@@ -45,6 +45,8 @@ function setHusky(rootDir, scriptPath) {
         }
     })
     ora('Copying husky setting files').succeed()
+
+    process.stdout.write('The project dir will be set up as a git repository when exec npm ci at first time.')
 }
 
 module.exports = setHusky;

@@ -12,7 +12,6 @@ async function download(
     {
         branchName = 'master',
         destDir = false,
-        removeGitignore = true,
         removeReadme = false,
         mergeEnvSample = true
     } = {}
@@ -32,15 +31,6 @@ async function download(
         spinner.succeed();
 
         const removeGitFiles = new Promise(function (resolve, reject) {
-            if (removeGitignore) {
-                try {
-                    const gitignorePath = path.join(tmpDir, '.gitignore');
-                    fs.removeSync(gitignorePath);
-                } catch (e) {
-                    console.log("couldn't remove .gitignore");
-                    console.log(e);
-                }
-            }
             if (removeReadme) {
                 try {
                     const readmePath = path.join(tmpDir, 'README.md');
@@ -87,6 +77,33 @@ async function download(
             }
         });
 
+        const mergeGitignore = new Promise(function () {
+            const srcPath = path.join(tmpDir, '.gitignore');
+            const destPath = path.join(projectDir, '.gitignore');
+            if (!isFileExist(destPath)) {
+                fs.appendFileSync(destPath, "", function (err) {
+                    if (err) {
+                        throw err;
+                    }
+                });
+            }
+            if (isFileExist(srcPath)) {
+                const destData = fs.readFileSync(destPath, {encoding: "utf-8"});
+                let destDataArr = destData.split(/\r\n|\r|\n/)
+                const srcData = fs.readFileSync(srcPath, {encoding: "utf-8"});
+                let srcDataArr = srcData.split(/\r\n|\r|\n/)
+
+                if ( !srcDataArr.length ) return
+                srcDataArr.forEach(data => {
+                    if ( !destDataArr.includes(data) ) {
+                        destDataArr.push(data)
+                    }
+                })
+                fs.removeSync(srcPath);
+                fs.writeFileSync(destPath,destDataArr.join("\n"))
+            }
+        });
+
         const moveFiles = new Promise(function (resolve, reject) {
             if (destDir !== false) {
                 fs.mkdirsSync(destPath);
@@ -102,7 +119,7 @@ async function download(
             }
         });
 
-        removeGitFiles.then(mergeEnv).then(moveFiles).then(afterClone);
+        removeGitFiles.then(mergeEnv).then(mergeGitignore).then(moveFiles).then(afterClone);
         return await destPath
     }
 }

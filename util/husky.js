@@ -19,7 +19,7 @@ function setHusky(rootDir, scriptPath) {
 
     // scriptsを追加 初回npm ci時にgit initしてhuskyをインストールする
     pkg.scripts.prepare = "if [ ! -e .git ]; then git init; fi && npx husky init && npx husky install"
-    pkg.scripts.test = "lint-staged -c .lintstagedrc.js && if [ -n \"$(git diff --cached --name-only --diff-filter=DR -- .env-sample)\"  ]; then echo 'Error : Do not rename or remove .env-sample, It should be copy to .env'; exit 1; fi"
+    pkg.scripts.test = "lint-staged -c .lintstagedrc.js && if [ -n \"$(git diff --cached --name-only --diff-filter=DR -- .env-sample)\"  ]; then echo 'Error : Do not rename or remove .env-sample, it should be copy to .env'; exit 1; fi"
     fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2))
     ora(`Update package.json`).succeed()
 

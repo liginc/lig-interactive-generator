@@ -31,12 +31,12 @@ inquirer.prompt([{
     name: 'php_ver',
     message: 'Choose PHP version',
     type: 'list',
-    choices: ['7.3', '7.4','8.0']
+    choices: ['8.0', '7.4','7.3']
 }, {
     name: 'mysql_ver',
     message: 'Choose MySQL version',
     type: 'list',
-    choices: ['5.6', '5.7','8.0']
+    choices: ['8.0', '5.7','5.6']
 }]).then((answer) => {
     const thePromise = Promise.resolve();
     thePromise

@@ -15,7 +15,7 @@ const projectName = process.argv[2];
 const rootDir = path.join(process.cwd(), projectName);
 const pkgPath = path.join(rootDir, 'package.json')
 const nodeVersion = process.argv[3];
-const env = path.join(rootDir, ".env");
+const env = path.join(rootDir, ".env-sample");
 const webpackMixJs = path.join(rootDir, "webpack.mix.js");
 
 inquirer.prompt([{
@@ -29,11 +29,11 @@ inquirer.prompt([{
     choices: ['with theme', 'only functions']
 }, {
     name: 'php_ver',
-    message: 'Type PHP version (Empty will be "7.3")',
+    message: 'Type PHP version (Empty will be "7.4")',
     type: 'input',
 }, {
     name: 'mysql_ver',
-    message: 'Type MySQL version (Empty will be "5.7")',
+    message: 'Type MySQL version (Empty will be "8.0")',
     type: 'input',
 }]).then((answer) => {
     const thePromise = Promise.resolve();
@@ -74,7 +74,15 @@ inquirer.prompt([{
             // Replace text on .env
             if (answer.php_ver !== '') childProcess.spawnSync('sed', ["-i", "", "-e", "s|PHP_VER=.*$|PHP_VER=" + answer.php_ver + "|g", env]);
             if (answer.mysql_ver !== '') childProcess.spawnSync('sed', ["-i", "", "-e", "s|MYSQL_VER=.*$|MYSQL_VER=" + answer.mysql_ver + "|g", env]);
-            if (answer.wordpress_ver !== '') childProcess.spawnSync('sed', ["-i", "", "-e", "s|WP_VERSION=.*$|WP_VERSION=" + answer.wordpress_ver + "|g", env]);
+            if (answer.wordpress_ver !== '') {
+                childProcess.spawnSync('sed', ["-i", "", "-e", "s|WP_VERSION=.*$|WP_VERSION=" + answer.wordpress_ver + "|g", env]);
+            } else {
+                const wpLatestVersion = childProcess.spawnSync('git', ["ls-remote", "--tags", "--refs", "--sort='v:refname'", "https://github.com/WordPress/WordPress", "|", "tail", "-n1", "|","sed", "'s/.*\\///'"],{
+                    shell: true
+                });
+                childProcess.spawnSync('sed', ["-i", "", "-e", "s|WP_VERSION=.*$|WP_VERSION=" + wpLatestVersion.stdout.toString().replace(/\r?\n/g,"") + "|g", env]).stderr.toString();
+                process.stdout.write('WP version will set to ' + wpLatestVersion.stdout.toString() + "\n")
+            }
 
             childProcess.spawnSync('sed', ["-i", "", "-e", "s|WP_THEME_NAME=.*$|WP_THEME_NAME=" + projectName + "|g", env]);
             childProcess.spawnSync('sed', ["-i", "", "-e", "s|input-theme-name|" + projectName + "|g", env]);

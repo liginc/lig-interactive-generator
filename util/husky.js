@@ -17,8 +17,8 @@ function setHusky(rootDir, scriptPath) {
         }
     }
 
-    // scriptsを追加
-    pkg.scripts.prepare = "npx husky init && npx husky install"
+    // scriptsを追加 初回npm ci時にgit initしてhuskyをインストールする
+    pkg.scripts.prepare = "git init && npx husky init && npx husky install"
     pkg.scripts.test = "lint-staged -c .lintstagedrc.js"
     fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2))
     ora(`Update package.json`).succeed()

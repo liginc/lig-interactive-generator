@@ -8,7 +8,8 @@ const rootDir = path.join(process.cwd(), projectName);
 const pkgPath = path.join(rootDir, 'package.json')
 const nodeVersion = process.argv[3];
 
-download('https://github.com/liginc/laravel-mix-boilerplate-static.git', {mergeEnvSample: true}).then((projectDir) => {
+download('https://github.com/liginc/laravel-mix-boilerplate-static.git')
+    .then((projectDir) => {
     let pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
     pkg.engineStrict = true
     pkg.engines.node = nodeVersion

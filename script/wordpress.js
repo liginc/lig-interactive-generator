@@ -38,14 +38,10 @@ inquirer.prompt([{
     const thePromise = Promise.resolve();
     thePromise
         .then(() => {
-            download('https://github.com/liginc/lig-docker-wordpress.git', {
-                mergeEnvSample: true
-            });
+            download('https://github.com/liginc/lig-docker-wordpress.git');
         })
         .then(() => {
-            download('https://github.com/liginc/laravel-mix-boilerplate-wordpress.git', {
-                mergeEnvSample: true
-            })
+            download('https://github.com/liginc/laravel-mix-boilerplate-wordpress.git')
         })
         .then(() => {
             if (answer.wordpress_type == 'with theme') {

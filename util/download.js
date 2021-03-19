@@ -51,29 +51,31 @@ async function download(
         });
 
         const mergeEnv = new Promise(function () {
-            const samplePath = path.join(tmpDir, '.env-sample');
-            const envPath = path.join(projectDir, '.env-sample');
-            if (!isFileExist(envPath)) {
-                fs.appendFileSync(envPath, "", function (err) {
+            const srcPath = path.join(tmpDir, '.env-sample');
+            const destPath = path.join(projectDir, '.env-sample');
+            const envDestPath = path.join(projectDir, '.env');
+            if (!isFileExist(destPath)) {
+                fs.appendFileSync(destPath, "", function (err) {
                     if (err) {
                         throw err;
                     }
                 });
             }
-            if (mergeEnvSample !== false && isFileExist(samplePath)) {
-                const envData = fs.readFileSync(envPath, {encoding: "utf-8"});
-                let envDataArr = envData.split(/\r\n|\r|\n/)
-                const envDataTmp = fs.readFileSync(samplePath, {encoding: "utf-8"});
-                let envDataTmpArr = envDataTmp.split(/\r\n|\r|\n/)
+            if (isFileExist(srcPath)) {
+                const destData = fs.readFileSync(destPath, {encoding: "utf-8"});
+                let destDataArr = destData.split(/\r\n|\r|\n/)
+                const srcData = fs.readFileSync(srcPath, {encoding: "utf-8"});
+                let srcDataArr = srcData.split(/\r\n|\r|\n/)
 
-                if ( !envDataTmpArr.length ) return
-                envDataTmpArr.forEach(data => {
-                    if ( !envDataArr.includes(data) ) {
-                        envDataArr.push(data)
+                if ( !srcDataArr.length ) return
+                srcDataArr.forEach(data => {
+                    if ( !destDataArr.includes(data) ) {
+                        destDataArr.push(data)
                     }
                 })
-                fs.removeSync(samplePath);
-                fs.writeFileSync(envPath,envDataArr.join("\n"))
+                fs.removeSync(srcPath);
+                fs.writeFileSync(destPath,destDataArr.join("\n"))
+                fs.copyFile(destPath,envDestPath)
             }
         });
 

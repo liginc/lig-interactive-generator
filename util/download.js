@@ -12,8 +12,6 @@ async function download(
     {
         branchName = 'master',
         destDir = false,
-        removeReadme = false,
-        mergeEnvSample = true
     } = {}
 ) {
     const spinner = ora(`[download] ${repository}`).start();
@@ -31,16 +29,6 @@ async function download(
         spinner.succeed();
 
         const removeGitFiles = new Promise(function (resolve, reject) {
-            if (removeReadme) {
-                try {
-                    const readmePath = path.join(tmpDir, 'README.md');
-                    fs.removeSync(readmePath);
-                } catch (e) {
-                    console.log("couldn't remove README.md");
-                    console.log(e);
-                }
-            }
-
             try {
                 const dotGitPath = path.join(tmpDir, '.git');
                 fs.removeSync(dotGitPath);
@@ -49,6 +37,19 @@ async function download(
                 console.log(e);
             }
         });
+
+        const mergeReadme = new Promise(function () {
+            const readmeSrcPath = path.join(tmpDir, 'README.md')
+            if (!isFileExist(readmeSrcPath)) return;
+            const readmeSrcData = fs.readFileSync(readmeSrcPath, {encoding: "utf-8"})
+            const readmeSrcDataArr = readmeSrcData.split(/^\-\-\-/m, 2)
+
+            fs.removeSync(readmeSrcPath);
+
+            if (readmeSrcDataArr.length !== 2) return
+            const readmeDestPath = path.join(projectDir, 'README.md')
+            fs.appendFileSync(readmeDestPath, "--- \n" + readmeSrcDataArr[1], {encoding: "utf-8"})
+        })
 
         const mergeEnv = new Promise(function () {
             const srcPath = path.join(tmpDir, '.env-sample');
@@ -67,15 +68,15 @@ async function download(
                 const srcData = fs.readFileSync(srcPath, {encoding: "utf-8"});
                 let srcDataArr = srcData.split(/\r\n|\r|\n/)
 
-                if ( !srcDataArr.length ) return
+                if (!srcDataArr.length) return
                 srcDataArr.forEach(data => {
-                    if ( !destDataArr.includes(data) ) {
+                    if (!destDataArr.includes(data)) {
                         destDataArr.push(data)
                     }
                 })
                 fs.removeSync(srcPath);
-                fs.writeFileSync(destPath,destDataArr.join("\n"))
-                fs.copyFile(destPath,envDestPath)
+                fs.writeFileSync(destPath, destDataArr.join("\n"))
+                fs.copyFile(destPath, envDestPath)
             }
         });
 
@@ -95,14 +96,14 @@ async function download(
                 const srcData = fs.readFileSync(srcPath, {encoding: "utf-8"});
                 let srcDataArr = srcData.split(/\r\n|\r|\n/)
 
-                if ( !srcDataArr.length ) return
+                if (!srcDataArr.length) return
                 srcDataArr.forEach(data => {
-                    if ( !destDataArr.includes(data) ) {
+                    if (!destDataArr.includes(data)) {
                         destDataArr.push(data)
                     }
                 })
                 fs.removeSync(srcPath);
-                fs.writeFileSync(destPath,destDataArr.join("\n"))
+                fs.writeFileSync(destPath, destDataArr.join("\n"))
             }
         });
 
@@ -121,7 +122,7 @@ async function download(
             }
         });
 
-        removeGitFiles.then(mergeEnv).then(mergeGitignore).then(moveFiles).then(afterClone);
+        removeGitFiles.then(mergeEnv).then(mergeReadme).then(mergeGitignore).then(moveFiles).then(afterClone);
         return await destPath
     }
 }

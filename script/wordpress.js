@@ -44,7 +44,7 @@ inquirer.prompt([{
             download('https://github.com/liginc/lig-docker-wordpress.git');
         })
         .then(() => {
-            download('https://github.com/liginc/laravel-mix-boilerplate-wordpress.git')
+            download('https://github.com/liginc/laravel-mix-boilerplate-wordpress.git',{mergeReadme:false})
         })
         .then(() => {
             if (answer.wordpress_type == 'with theme') {

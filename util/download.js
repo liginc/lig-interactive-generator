@@ -84,7 +84,6 @@ async function download(
     const mergeEnvPromise = new Promise(function () {
       const srcPath = path.join(tmpDir, ".env-sample");
       const destPath = path.join(projectDir, ".env-sample");
-      const envDestPath = path.join(projectDir, ".env");
       if (!isFileExist(destPath)) {
         fs.appendFileSync(destPath, "", function (err) {
           if (err) {
@@ -106,7 +105,6 @@ async function download(
         });
         fs.removeSync(srcPath);
         fs.writeFileSync(destPath, destDataArr.join("\n"));
-        fs.copyFile(destPath, envDestPath);
       }
     });
 

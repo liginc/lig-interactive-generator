@@ -39,7 +39,7 @@ async function download(
     process.stderr.write(result.stderr);
     spinner.succeed();
 
-    const removeGitFiles = new Promise(function (resolve, reject) {
+    const removeGitFilesPromise = new Promise(function (resolve, reject) {
       try {
         const dotGitPath = path.join(tmpDir, ".git");
         fs.removeSync(dotGitPath);
@@ -152,6 +152,14 @@ async function download(
             pkg.dependencies[k] = appendPkg.dependencies[k];
           }
         }
+        if ( (Object.keys(pkg).indexOf('devDependencies') === -1)) {
+          pkg.devDependencies = {}
+        }
+        for (let k of Object.keys(appendPkg.devDependencies)) {
+          if (!(k in pkg.devDependencies)) {
+            pkg.devDependencies[k] = appendPkg.devDependencies[k];
+          }
+        }
         fs.writeFileSync(packageDestPath, JSON.stringify(pkg, null, 2))
         ora(`Update package.json`).succeed()
       }
@@ -185,22 +193,12 @@ async function download(
       fs.removeSync(tmpDir);
     });
 
-    const afterClonePromise = new Promise(function (resolve, reject) {
-      if (fs.existsSync(path.join(destPath, "after_clone.sh"))) {
-        childProcess.execSync(
-          "$SHELL " + path.join(destPath, "after_clone.sh") + " " + destPath
-        );
-        fs.removeSync(path.join(destPath, "after_clone.sh"));
-      }
-    });
-
-    removeGitFiles
+    removeGitFilesPromise
       .then(mergeEnvPromise)
       .then(mergeReadmePromise)
       .then(mergeGitignorePromise)
       .then(appendPackagePromise)
       .then(moveFilesPromise)
-      .then(afterClonePromise);
     return await destPath;
   }
 }

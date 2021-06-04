@@ -196,7 +196,7 @@ inquirer
           );
           data = data.replace(
             /(^\s+?\.sass\($)/m,
-            "  .webpackConfig(\n       module: \n           rules: [\n               test: /\\\.scss/,\n               enforce: 'pre',\n               loader: 'import-glob-loader'\n           }]\n       }\n   })\n$1"
+            "  .webpackConfig({\n       module: {\n           rules: [{\n               test: /\\\.scss/,\n               enforce: 'pre',\n               loader: 'import-glob-loader'\n           }]\n       }\n   })\n$1"
           );
           fs.writeFile(webpackMixJs, data, "utf8", function (err) {
             if (err) return console.log(err);

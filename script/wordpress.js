@@ -16,6 +16,7 @@ const rootDir = path.join(process.cwd(), projectName);
 const pkgPath = path.join(rootDir, "package.json");
 const nodeVersion = process.argv[3];
 const env = path.join(rootDir, ".env-sample");
+const gitIgnore = path.join(rootDir, ".gitignore");
 const webpackMixJs = path.join(rootDir, "webpack.mix.js");
 
 inquirer
@@ -173,6 +174,13 @@ inquirer
           "-e",
           "s|input-theme-name|" + projectName + "|g",
           env,
+        ]);
+        childProcess.spawnSync("sed", [
+          "-i",
+          "",
+          "-e",
+          "s|lig-wordpress-template|" + projectName + "|g",
+          gitIgnore,
         ]);
         childProcess.spawnSync("sed", [
           "-i",

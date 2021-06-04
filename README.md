@@ -1,12 +1,12 @@
 # LIG Interactive Generator
  
-- Last Update : 2021/03/19
-- Leatest Version : 0.5.4
+- Last Update : 2021/06/04
+- Leatest Version : 0.6.3
 - Author : LIG inc
  
 ## Require 
  
-- Node : ^12.18.3
+- Node : ^14.16.0
 - NPM : ^6.13.4 
 
 ## Execute latest version
